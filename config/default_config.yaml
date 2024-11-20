@@ -1,0 +1,31 @@
+task:
+  description: "生成中文情感分析数据集"
+  examples:
+    - text: "这家餐厅的服务态度很好，菜品也很美味"
+      label: "正面"
+    - text: "价格太贵了，而且等待时间特别长"
+      label: "负面"
+  schema:
+    format: "json"
+    fields:
+      - name: "text"
+        type: "string"
+        required: true
+      - name: "label"
+        type: "string"
+        choices: ["正面", "负面", "中性"]
+        required: true
+
+model:
+  type: "openai"
+  name: "gpt-4"
+  api_key: "your-api-key-here"
+  parameters:
+    temperature: 0.7
+    max_tokens: 1000
+    top_p: 0.9
+
+generation:
+  batch_size: 10
+  total_samples: 50
+  validation: true
