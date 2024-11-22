@@ -33,6 +33,7 @@ test_df = pd.DataFrame([
     "送货太慢了,等了好久"
 ], columns=["text"])
 
+
 async def main():
     agent = Agent(
         skills=ClassificationSkill(

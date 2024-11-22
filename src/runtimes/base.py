@@ -3,6 +3,7 @@ from typing import Dict, Any
 import pandas as pd
 from src.skills.base import BaseSkill
 
+
 class BaseRuntime(ABC):
     @abstractmethod
     async def run(

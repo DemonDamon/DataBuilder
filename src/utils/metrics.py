@@ -3,7 +3,9 @@ from datetime import datetime
 import logging
 from pydantic import BaseModel
 
+
 logger = logging.getLogger(__name__)
+
 
 class MetricsData(BaseModel):
     """指标数据模型"""
@@ -16,6 +18,7 @@ class MetricsData(BaseModel):
     error_types: Dict[str, int] = {}
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
+
 
 class MetricsCollector:
     def __init__(self):

@@ -1,6 +1,7 @@
 from typing import List, Dict, Any
 from .schema import Schema
 
+
 class DataValidator:
     def __init__(self, schema: Schema):
         self.schema = schema

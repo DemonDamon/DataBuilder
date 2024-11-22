@@ -12,6 +12,7 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
+
 def test_api():
     try:
         response = client.chat.completions.create(
@@ -22,6 +23,7 @@ def test_api():
         print("模型回复:", response.choices[0].message.content)
     except Exception as e:
         print("API 测试失败:", str(e))
+
 
 if __name__ == "__main__":
     test_api()

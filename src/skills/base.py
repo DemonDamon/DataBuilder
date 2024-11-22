@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Any
 import pandas as pd
 
+
 class BaseSkill(ABC):
     def __init__(
         self,

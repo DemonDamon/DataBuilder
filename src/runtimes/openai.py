@@ -4,6 +4,7 @@ from openai import OpenAI
 from .base import BaseRuntime
 from src.skills.base import BaseSkill
 
+
 class OpenAIRuntime(BaseRuntime):
     def __init__(
         self,

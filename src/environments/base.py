@@ -3,11 +3,13 @@ from abc import ABC, abstractmethod
 import pandas as pd
 from pydantic import BaseModel, ConfigDict
 
+
 class EnvironmentConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     
     df: pd.DataFrame
     ground_truth_columns: Dict[str, str]
+
 
 class BaseEnvironment(ABC):
     def __init__(self, config: EnvironmentConfig):

@@ -3,6 +3,7 @@ from pathlib import Path
 from src.core.builder import DataBuilder
 from src.utils.helpers import load_yaml_config
 
+
 async def main():
     # 加载配置
     config = load_yaml_config('config/default_config.yaml')

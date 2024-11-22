@@ -2,6 +2,7 @@ from typing import Dict, List, Any
 import pandas as pd
 from .base import BaseSkill
 
+
 class ClassificationSkill(BaseSkill):
     def __init__(
         self,
@@ -24,7 +25,8 @@ class ClassificationSkill(BaseSkill):
         # 在运行时中实现具体的分类逻辑
         return data
 
-    def evaluate_predictions(self, predictions: pd.Series, ground_truth: pd.Series) -> float:
+    @staticmethod
+    def evaluate_predictions(predictions: pd.Series, ground_truth: pd.Series) -> float:
         """评估预测结果
         Args:
             predictions: 预测结果Series

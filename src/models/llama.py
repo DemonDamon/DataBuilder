@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from .base import BaseModel
 
+
 class LlamaModel(BaseModel):
     def __init__(self, model_config: Dict[str, Any]):
         super().__init__(model_config)

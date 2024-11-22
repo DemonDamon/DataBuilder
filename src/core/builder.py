@@ -7,6 +7,7 @@ from .schema import Schema
 from .validator import DataValidator
 from ..utils.helpers import create_prompt, save_json_data
 
+
 class DataBuilder:
     def __init__(self, task_config: Dict[str, Any], model_config: Dict[str, Any]):
         self.task_config = task_config
@@ -47,11 +48,12 @@ class DataBuilder:
             batch = await self.generate_batch(batch_size)
             dataset.extend(batch)
         return dataset[:total_samples]
-    
-    def save_dataset(self, data: List[Dict[str, Any]], output_path: str):
+
+    @staticmethod
+    def save_dataset(data: List[Dict[str, Any]], output_path: str):
         """保存数据集"""
         save_json_data(data, output_path)
-    
+
     async def validate_generation(self, data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """验证生成的数据质量"""
         metrics = {

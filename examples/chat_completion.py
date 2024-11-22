@@ -11,6 +11,7 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
+
 def chat_completion(messages: list):
     """获取对话回复"""
     try:
@@ -43,6 +44,7 @@ def chat_completion(messages: list):
         print(f"\n发生错误: {str(e)}")
         return
 
+
 def interactive_chat():
     """交互式对话"""
     messages = []
@@ -70,6 +72,7 @@ def interactive_chat():
         
         if assistant_message:  # 只有在成功获得回复时才添加到历史
             messages.append({"role": "assistant", "content": assistant_message})
+
 
 if __name__ == "__main__":
     interactive_chat()

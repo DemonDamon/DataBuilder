@@ -2,6 +2,7 @@ from typing import List, Dict, Any
 from dataclasses import dataclass
 from enum import Enum
 
+
 class FieldType(Enum):
     STRING = "string"
     INTEGER = "integer"
@@ -10,12 +11,14 @@ class FieldType(Enum):
     LIST = "list"
     DICT = "dict"
 
+
 @dataclass
 class Field:
     name: str
     type: FieldType
     choices: List[Any] = None
     required: bool = True
+
 
 class Schema:
     def __init__(self, fields: List[Dict[str, Any]]):

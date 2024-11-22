@@ -2,6 +2,7 @@ from typing import Dict, Any
 import pandas as pd
 from .base import BaseEnvironment, EnvironmentConfig
 
+
 class StaticEnvironment(BaseEnvironment):
     def __init__(
         self,

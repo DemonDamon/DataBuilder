@@ -8,12 +8,14 @@ import os
 from pathlib import Path
 from ..utils.retry import retry_with_exponential_backoff
 
+
 # 加载环境变量
 env_path = Path('.env')
 if not env_path.exists():
     raise FileNotFoundError("未找到 .env 文件，请根据 .env.example 创建配置文件")
 
 load_dotenv(dotenv_path=env_path, override=True)
+
 
 class OpenAIModel(BaseModel):
     def __init__(self, model_config: Dict[str, Any]):

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
 
+
 class BaseModel(ABC):
     """大模型基类，定义基本接口"""
     
