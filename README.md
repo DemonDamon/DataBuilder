@@ -208,3 +208,52 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact 📬
 
 For any questions or feedback, please reach out to us at [bingzhenli@hotmail.com](bingzhenli@hotmail.com).
+
+## Project References 🔍
+
+This project draws inspiration from the [Adala](https://github.com/HumanSignal/Adala) framework, incorporating several key architectural concepts:
+
+### Core Components Inspired by Adala
+
+1. **Agent-Based Architecture**
+   - Autonomous data generation agents
+   - Iterative learning capabilities
+   - Environment-aware processing
+   ```python:src/core/agent.py
+   startLine: 4
+   endLine: 20
+   ```
+
+2. **Runtime System**
+   - Flexible model integration
+   - Configurable execution environments
+   - Support for multiple LLM providers
+
+3. **Environment Management**
+   - Ground truth dataset handling
+   - Feedback collection mechanisms
+   - Performance metrics tracking
+
+4. **Skills System**
+   - Task-specific capabilities
+   - Customizable output formats
+   - Validation mechanisms
+
+### Key Improvements
+
+We've enhanced several aspects while adapting Adala's concepts:
+
+- **Simplified Configuration**: Streamlined setup process with YAML-based configs
+- **Async Processing**: Added robust async support for batch operations
+- **Enhanced Validation**: Improved data quality checks and error handling
+- **Metrics Collection**: Added comprehensive generation metrics and monitoring
+
+### Future Integrations
+
+Planned features inspired by Adala:
+- Memory management for long-term learning
+- Advanced feedback collection mechanisms
+- Multi-modal data generation support
+- Enhanced runtime optimization
+
+For more details about Adala's architecture, see their documentation:
