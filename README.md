@@ -1,7 +1,6 @@
 # DataBuilder 🚀
 <div align="center">
-<img src="assets/logo3.webp" width="520" alt="ragalaxy logo">
-</a>
+<img src="assets/logo1.webp" width="520" alt="ragalaxy logo">
 </div>
 
 Welcome to **DataBuilder**! This project leverages the power of large language models to create high-quality, customized datasets for AI training and evaluation. Whether you're building a new AI model or enhancing an existing one, DataBuilder is here to streamline your data preparation process.
@@ -180,6 +179,81 @@ Follow these steps to get started with DataBuilder:
         - Async processing
         - Batch generation
         - Flexible parameter control
+
+    c. Classification Example (classification.py):
+    ```python
+    from src.core.agent import Agent
+    from src.environments.static import StaticEnvironment
+    from src.skills.classification import ClassificationSkill
+    from src.runtimes.openai import OpenAIRuntime
+    import pandas as pd
+
+    # 准备训练数据
+    train_df = pd.DataFrame([
+        ["这个产品质量很好", "正面"],
+        ["包装破损,很失望", "负面"], 
+        ["一般般,不算好也不算差", "中性"],
+        ["物流速度快,服务态度好", "正面"],
+        ["产品有质量问题,退货也不方便", "负面"]
+    ], columns=["text", "sentiment"])
+
+    # 创建代理
+    agent = Agent(
+        skills=ClassificationSkill(
+            name='sentiment',
+            instructions='对商品评论进行情感分类',
+            labels={'sentiment': ["正面", "负面", "中性"]},
+            input_template='评论文本: {text}',
+            output_template='情感分类: {sentiment}'
+        ),
+        environment=StaticEnvironment(
+            df=train_df,
+            ground_truth_columns={'sentiment': 'sentiment'}
+        ),
+        runtimes={
+            'default': OpenAIRuntime(
+                model='gpt-3.5-turbo',
+                api_key=os.getenv('OPENAI_API_KEY'),
+                temperature=0.7
+            )
+        }
+    )
+
+    # 训练模型
+    await agent.learn(learning_iterations=3)
+    ```
+
+    特点:
+    - **自动提示词优化**: 通过多轮训练自动优化提示词
+    - **准确率反馈**: 每轮训练都会计算并显示准确率
+    - **格式规范化**: 自动规范化模型输出格式
+    - **渐进式学习**: 支持多轮迭代训练提升效果
+
+    运行示例:
+    ```bash
+    python examples/classification.py
+    ```
+
+    输出示例:
+    ~~~
+    开始第 1 轮训练...
+    训练准确率: {'sentiment_accuracy': 0.4}
+    新提示词效果更好: 1.0 > 0.4
+   
+    开始第 2 轮训练...
+    训练准确率: {'sentiment_accuracy': 1.0}
+   
+    开始第 3 轮训练...
+    训练准确率: {'sentiment_accuracy': 1.0}
+   
+    优化后的提示词:
+    ```
+    对商品评论进行情感分类。
+    输入模板: 评论文本: {text}
+    输出模板: 情感分类: {sentiment}
+    可用标签: {'sentiment': ['正面', '负面', '中性']}
+    ```
+    ~~~
 
 ### Common Issues
 
