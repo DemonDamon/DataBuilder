@@ -144,7 +144,7 @@ Follow these steps to get started with DataBuilder:
     python examples/classification.py
     ```
 
-    输出示例:
+    Output Example:
     ~~~
     开始第 1 轮训练...
     训练准确率: {'sentiment_accuracy': 0.4}
