@@ -5,6 +5,8 @@
 
 Welcome to **DataBuilder**! This project leverages the power of large language models to create high-quality, customized datasets for AI training and evaluation. Whether you're building a new AI model or enhancing an existing one, DataBuilder is here to streamline your data preparation process.
 
+![alt text](assets/classdiagram.png)
+
 ## Features 🌟
 
 - **Custom Dataset Generation**: Tailor datasets to your specific needs using advanced AI models.
@@ -107,65 +109,14 @@ Follow these steps to get started with DataBuilder:
 
 2. Generate Data Examples:
 
-    a. Quick Generation (generate_data.py):
-    ```python
-    from src.core.builder import DataBuilder, TaskConfig, ModelConfig
+    a. Quick Generation [generate_data.py](examples/generate_data.py):
 
-    # Configure task
-    task_config = TaskConfig(
-        description="Generate Chinese sentiment analysis dataset",
-        examples=[
-            {"text": "Great service and delicious food", "label": "positive"},
-            {"text": "Too expensive and long waiting time", "label": "negative"}
-        ],
-        schema={
-            "format": "json",
-            "fields": [
-                {"name": "text", "type": "string"},
-                {"name": "label", "type": "string", "choices": ["positive", "negative", "neutral"]}
-            ]
-        }
-    )
-
-    # Configure model
-    model_config = ModelConfig(
-        type="openai",
-        name="gpt-4",
-        parameters={
-            "temperature": 0.7,
-            "max_tokens": 1000
-        }
-    )
-
-    # Initialize and generate
-    builder = DataBuilder(task_config, model_config)
-    data = builder.generate(batch_size=10)
-    ```
-
-    b. Batch Generation (generate_dataset.py):
+    b. Batch Generation [generate_dataset.py](examples/generate_dataset.py):
     - Uses YAML configuration
     - Supports async processing
     - Handles large-scale generation
 
     Example configuration [config/default_config.yaml](config/default_config.yaml):
-    ```yaml
-    generation:
-    batch_size: 10      # Number of samples per batch
-    total_samples: 100  # Total number of samples to generate
-    validation: true    # Enable data validation
-
-    task:
-    description: "Generate Chinese sentiment analysis dataset"
-    examples: [...]
-    schema: {...}
-
-    model:
-    type: "openai"
-    name: "gpt-4"
-    parameters:
-        temperature: 0.7
-        max_tokens: 1000
-    ```
 
     Run the generator:
     ```bash
@@ -180,48 +131,7 @@ Follow these steps to get started with DataBuilder:
         - Batch generation
         - Flexible parameter control
 
-    c. Classification Example (classification.py):
-    ```python
-    from src.core.agent import Agent
-    from src.environments.static import StaticEnvironment
-    from src.skills.classification import ClassificationSkill
-    from src.runtimes.openai import OpenAIRuntime
-    import pandas as pd
-
-    # 准备训练数据
-    train_df = pd.DataFrame([
-        ["这个产品质量很好", "正面"],
-        ["包装破损,很失望", "负面"], 
-        ["一般般,不算好也不算差", "中性"],
-        ["物流速度快,服务态度好", "正面"],
-        ["产品有质量问题,退货也不方便", "负面"]
-    ], columns=["text", "sentiment"])
-
-    # 创建代理
-    agent = Agent(
-        skills=ClassificationSkill(
-            name='sentiment',
-            instructions='对商品评论进行情感分类',
-            labels={'sentiment': ["正面", "负面", "中性"]},
-            input_template='评论文本: {text}',
-            output_template='情感分类: {sentiment}'
-        ),
-        environment=StaticEnvironment(
-            df=train_df,
-            ground_truth_columns={'sentiment': 'sentiment'}
-        ),
-        runtimes={
-            'default': OpenAIRuntime(
-                model='gpt-3.5-turbo',
-                api_key=os.getenv('OPENAI_API_KEY'),
-                temperature=0.7
-            )
-        }
-    )
-
-    # 训练模型
-    await agent.learn(learning_iterations=3)
-    ```
+    c. Classification Example [classification.py](examples/classification.py):
 
     特点:
     - **自动提示词优化**: 通过多轮训练自动优化提示词
