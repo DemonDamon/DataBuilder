@@ -9,42 +9,33 @@
 """
 
 import asyncio
-import random
 from functools import wraps
-from typing import TypeVar, Callable, Any
-
-
-T = TypeVar('T')
+from typing import Callable, Any
 
 
 def retry_with_exponential_backoff(
     max_retries: int = 3,
     initial_delay: float = 1,
-    max_delay: float = 60,
-    exponential_base: float = 2,
-    error_types: tuple = (Exception,),
-    logger = None
+    max_delay: float = 10,
+    exponential_base: float = 2
 ):
-    """增强的重试装饰器"""
-    def decorator(func):
+    def decorator(func: Callable) -> Callable:
         @wraps(func)
-        async def wrapper(*args, **kwargs):
-            retries = 0
+        async def wrapper(*args, **kwargs) -> Any:
             delay = initial_delay
+            last_exception = None
             
-            while True:
+            for attempt in range(max_retries):
                 try:
                     return await func(*args, **kwargs)
-                except error_types as e:
-                    retries += 1
-                    if retries > max_retries:
-                        if logger:
-                            logger.error(f"Max retries ({max_retries}) exceeded")
-                        raise e
+                except Exception as e:
+                    last_exception = e
+                    if attempt == max_retries - 1:
+                        raise last_exception
                     
-                    delay = min(delay * exponential_base, max_delay)
-                    if logger:
-                        logger.warning(f"Retry {retries}/{max_retries} after {delay}s")
                     await asyncio.sleep(delay)
+                    delay = min(delay * exponential_base, max_delay)
+            
+            raise last_exception
         return wrapper
     return decorator
