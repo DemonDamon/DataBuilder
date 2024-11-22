@@ -6,14 +6,13 @@ class DataValidator:
     def __init__(self, schema: Schema):
         self.schema = schema
     
-    def validate_item(self, item: Dict[str, Any]) -> bool:
-        """验证单条数据"""
-        return self.schema.validate(item)
-    
-    def validate_batch(self, items: List[Dict[str, Any]]) -> List[bool]:
-        """验证一批数据"""
-        return [self.validate_item(item) for item in items]
+    def is_valid(self, data: Dict[str, Any]) -> bool:
+        for field in self.schema.fields:
+            if field.name not in data:
+                return False
+            if not self.schema.validate_field(field.name, data[field.name]):
+                return False
+        return True
     
     def filter_valid_items(self, items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """过滤出有效的数据项"""
-        return [item for item in items if self.validate_item(item)]
+        return [item for item in items if self.is_valid(item)]
