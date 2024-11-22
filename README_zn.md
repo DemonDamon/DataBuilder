@@ -65,60 +65,197 @@
 
    示例代码：
    ```python
-   from dotenv import load_dotenv
-   from openai import OpenAI
-   import os
+    from dotenv import load_dotenv
+    from openai import OpenAI
+    import os
 
-   # 加载环境变量
-   load_dotenv()
+    # Load environment variables
+    load_dotenv()
 
-   # 配置 OpenAI 客户端
-   client = OpenAI(
-       base_url=os.getenv("OPENAI_API_BASE"),
-       api_key=os.getenv("OPENAI_API_KEY")
-   )
-
-   messages = []
-   print("欢迎使用 GPT-3.5 聊天！(输入 'quit' 退出，'clear' 清除历史)")
-```
-
-参考代码块：
-```python:examples/chat_completion.py
-startLine: 78
-endLine: 106
-```
-
-继续翻译：
-
-```markdown:README_zn.md
-2. 生成数据示例：
-
-    a. 快速生成（generate_data.py）：
-    ```python
-    from src.core.builder import DataBuilder, TaskConfig, ModelConfig
-
-    # 配置任务
-    task_config = TaskConfig(
-        description="生成中文情感分析数据集",
-        examples=[
-            {"text": "服务很好，食物美味", "label": "正面"},
-            {"text": "太贵了而且等待时间长", "label": "负面"}
-        ],
-        schema={
-            "format": "json",
-            "fields": [
-                {"name": "text", "type": "string"},
-                {"name": "label", "type": "string", "choices": ["正面", "负面", "中性"]}
-            ]
-        }
+    # Configure OpenAI client
+    client = OpenAI(
+        base_url=os.getenv("OPENAI_API_BASE"),
+        api_key=os.getenv("OPENAI_API_KEY")
     )
 
-    # 配置模型
-    model_config = ModelConfig(
-        type="openai",
-        model="gpt-3.5-turbo"
-    )
+    messages = []
+    print("Welcome to GPT-3.5 Chat! (Type 'quit' to exit, 'clear' to clear history)")
+
+    while True:
+        user_input = input("\nYou: ").strip()
+        if user_input.lower() == 'quit':
+            break
+        
+        messages.append({"role": "user", "content": user_input})
+        print("\nGPT: ", end="", flush=True)
+        
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            stream=True
+        )
+        
+        assistant_message = ""
+        for chunk in response:
+            if chunk.choices[0].delta.content:
+                print(chunk.choices[0].delta.content, end="", flush=True)
+                assistant_message += chunk.choices[0].delta.content
+        
+        if assistant_message:
+            messages.append({"role": "assistant", "content": assistant_message})
+        print()
     ```
+
+    2. 生成数据示例：
+
+        a. 快速生成（generate_data.py）：
+        ```python
+        from src.core.builder import DataBuilder, TaskConfig, ModelConfig
+
+        # Configure task
+        task_config = TaskConfig(
+            description="Generate Chinese sentiment analysis dataset",
+            examples=[
+                {"text": "Great service and delicious food", "label": "positive"},
+                {"text": "Too expensive and long waiting time", "label": "negative"}
+            ],
+            schema={
+                "format": "json",
+                "fields": [
+                    {"name": "text", "type": "string"},
+                    {"name": "label", "type": "string", "choices": ["positive", "negative", "neutral"]}
+                ]
+            }
+        )
+
+        # Configure model
+        model_config = ModelConfig(
+            type="openai",
+            name="gpt-4",
+            parameters={
+                "temperature": 0.7,
+                "max_tokens": 1000
+            }
+        )
+
+        # Initialize and generate
+        builder = DataBuilder(task_config, model_config)
+        data = builder.generate(batch_size=10)
+        ```
+
+        b. 批量生成 (generate_dataset.py)：
+
+        - 使用 YAML 配置
+        - 支持异步处理
+        - 处理大规模生成
+        
+        示例配置文件：config/default_config.yaml：
+        ```yaml
+        generation:
+        batch_size: 10      # Number of samples per batch
+        total_samples: 100  # Total number of samples to generate
+        validation: true    # Enable data validation
+
+        task:
+        description: "Generate Chinese sentiment analysis dataset"
+        examples: [...]
+        schema: {...}
+
+        model:
+        type: "openai"
+        name: "gpt-4"
+        parameters:
+            temperature: 0.7
+            max_tokens: 1000
+        ```
+        
+        运行生成器:
+        ```bash
+        python examples/generate_dataset.py
+        ```
+
+        主要区别：
+        - `generate_data.py`：快速测试和小型数据集
+        - `generate_dataset.py`：生产环境使用，具备：
+            - 配置管理
+            - 异步处理
+            - 批量生成
+            - 灵活的参数控制
+
+        c. 情感识别分类样例 [classification.py](examples/classification.py):
+        ```python
+        from src.core.agent import Agent
+        from src.environments.static import StaticEnvironment
+        from src.skills.classification import ClassificationSkill
+        from src.runtimes.openai import OpenAIRuntime
+        import pandas as pd
+
+        # 准备训练数据
+        train_df = pd.DataFrame([
+            ["这个产品质量很好", "正面"],
+            ["包装破损,很失望", "负面"], 
+            ["一般般,不算好也不算差", "中性"],
+            ["物流速度快,服务态度好", "正面"],
+            ["产品有质量问题,退货也不方便", "负面"]
+        ], columns=["text", "sentiment"])
+
+        # 创建代理
+        agent = Agent(
+            skills=ClassificationSkill(
+                name='sentiment',
+                instructions='对商品评论进行情感分类',
+                labels={'sentiment': ["正面", "负面", "中性"]},
+                input_template='评论文本: {text}',
+                output_template='情感分类: {sentiment}'
+            ),
+            environment=StaticEnvironment(
+                df=train_df,
+                ground_truth_columns={'sentiment': 'sentiment'}
+            ),
+            runtimes={
+                'default': OpenAIRuntime(
+                    model='gpt-3.5-turbo',
+                    api_key=os.getenv('OPENAI_API_KEY'),
+                    temperature=0.7
+                )
+            }
+        )
+
+        # 训练模型
+        await agent.learn(learning_iterations=3)
+        ```
+
+        特点:
+        - **自动提示词优化**: 通过多轮训练自动优化提示词
+        - **准确率反馈**: 每轮训练都会计算并显示准确率
+        - **格式规范化**: 自动规范化模型输出格式
+        - **渐进式学习**: 支持多轮迭代训练提升效果
+
+        运行示例:
+        ```bash
+        python examples/classification.py
+        ```
+
+        输出示例:
+        ~~~
+        开始第 1 轮训练...
+        训练准确率: {'sentiment_accuracy': 0.4}
+        新提示词效果更好: 1.0 > 0.4
+    
+        开始第 2 轮训练...
+        训练准确率: {'sentiment_accuracy': 1.0}
+    
+        开始第 3 轮训练...
+        训练准确率: {'sentiment_accuracy': 1.0}
+    
+        优化后的提示词:
+        ```
+        对商品评论进行情感分类。
+        输入模板: 评论文本: {text}
+        输出模板: 情感分类: {sentiment}
+        可用标签: {'sentiment': ['正面', '负面', '中性']}
+        ```
+        ~~~
 
 ### 常见问题
 
