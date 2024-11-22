@@ -133,13 +133,13 @@ Follow these steps to get started with DataBuilder:
 
     c. Classification Example [classification.py](examples/classification.py):
 
-    特点:
-    - **自动提示词优化**: 通过多轮训练自动优化提示词
-    - **准确率反馈**: 每轮训练都会计算并显示准确率
-    - **格式规范化**: 自动规范化模型输出格式
-    - **渐进式学习**: 支持多轮迭代训练提升效果
+    Features:
+    - **Automatic Prompt Optimization**: Automatically optimize prompts through multiple training rounds
+    - **Accuracy Feedback**: Calculate and display accuracy for each training round
+    - **Format Standardization**: Automatically standardize model output formats
+    - **Progressive Learning**: Support multi-round iterative training to improve effectiveness
 
-    运行示例:
+    Run Examples:
     ```bash
     python examples/classification.py
     ```
