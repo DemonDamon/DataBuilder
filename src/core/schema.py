@@ -1,36 +1,24 @@
 from typing import List, Dict, Any
-from dataclasses import dataclass
-from enum import Enum
+from pydantic import BaseModel
 
 
-class FieldType(Enum):
-    STRING = "string"
-    INTEGER = "integer"
-    FLOAT = "float"
-    BOOLEAN = "boolean"
-    LIST = "list"
-    DICT = "dict"
-
-
-@dataclass
-class Field:
+class Field(BaseModel):
     name: str
-    type: FieldType
-    choices: List[Any] = None
-    required: bool = True
+    type: str
+    choices: List[str] = []
 
 
 class Schema:
-    def __init__(self, fields: List[Dict[str, Any]]):
-        self.fields = [Field(**field) for field in fields]
+    def __init__(self, fields: List[Field]):
+        self.fields = fields
     
-    def validate(self, data: Dict[str, Any]) -> bool:
-        """验证数据是否符合schema定义"""
+    def validate_field(self, field_name: str, value: Any) -> bool:
         for field in self.fields:
-            if field.name not in data and field.required:
-                return False
-            if field.name in data:
-                value = data[field.name]
-                if field.choices and value not in field.choices:
-                    return False
-        return True
+            if field.name == field_name:
+                if field.type == "string":
+                    if not isinstance(value, str):
+                        return False
+                    if field.choices and value not in field.choices:
+                        return False
+                return True
+        return False
