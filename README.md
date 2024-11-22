@@ -219,10 +219,6 @@ This project draws inspiration from the [Adala](https://github.com/HumanSignal/A
    - Autonomous data generation agents
    - Iterative learning capabilities
    - Environment-aware processing
-   ```python:src/core/agent.py
-   startLine: 4
-   endLine: 20
-   ```
 
 2. **Runtime System**
    - Flexible model integration
@@ -256,4 +252,4 @@ Planned features inspired by Adala:
 - Multi-modal data generation support
 - Enhanced runtime optimization
 
-For more details about Adala's architecture, see their documentation:
+For more details about Adala's architecture, see their documentation.
