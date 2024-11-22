@@ -6,31 +6,33 @@ from ..models.llama import LlamaModel
 from .schema import Schema
 from .validator import DataValidator
 from ..utils.helpers import create_prompt, save_json_data
+from typing import Dict, Any, List
+from .config import TaskConfig, ModelConfig
 
 
 class DataBuilder:
-    def __init__(self, task_config: Dict[str, Any], model_config: Dict[str, Any]):
+    def __init__(self, task_config: TaskConfig, model_config: ModelConfig):
         self.task_config = task_config
         self.model_config = model_config
-        self.schema = Schema(task_config['schema']['fields'])
+        self.schema = Schema(task_config.schema.fields)
         self.validator = DataValidator(self.schema)
         self.model = self._init_model()
     
     def _init_model(self) -> BaseModel:
         """初始化模型"""
-        model_type = self.model_config['type'].lower()
+        model_type = self.model_config.type.lower()
         if model_type == 'openai':
-            return OpenAIModel(self.model_config)
+            return OpenAIModel(self.model_config.dict())
         elif model_type == 'llama':
-            return LlamaModel(self.model_config)
+            return LlamaModel(self.model_config.dict())
         else:
             raise ValueError(f"不支持的模型类型: {model_type}")
     
     async def generate_batch(self, batch_size: int) -> List[Dict[str, Any]]:
         """生成一批数据"""
         prompt = create_prompt(
-            self.task_config['description'],
-            self.task_config['examples']
+            self.task_config.description,
+            self.task_config.examples
         )
         
         response = await self.model.generate(prompt)
@@ -82,3 +84,11 @@ class DataBuilder:
             "data": valid_data,
             "metrics": metrics
         }
+    
+    async def generate(self, batch_size: int) -> List[Dict[str, Any]]:
+        """生成指定数量的数据"""
+        return await self.generate_batch(batch_size)
+    
+    def save(self, data: List[Dict[str, Any]], output_path: str):
+        """保存数据"""
+        save_json_data(data, output_path)
