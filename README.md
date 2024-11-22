@@ -327,3 +327,47 @@ Planned features inspired by Adala:
 - Enhanced runtime optimization
 
 For more details about Adala's architecture, see their documentation.
+
+## 🗺 Future Milestones
+
+### 1. Enhanced Agent Architecture
+- [ ] Implement teacher-student model architecture (using stronger models to guide weaker ones)
+- [ ] Support multiple skill combinations and collaboration
+- [ ] Add long-term memory management mechanism
+- [ ] Implement asynchronous feedback collection
+
+### 2. Environment System Enhancement
+- [ ] Support human-in-the-loop feedback mechanisms
+- [ ] Add real-time environment interaction capabilities
+- [ ] Implement dynamic dataset management
+- [ ] Support incremental learning scenarios
+
+### 3. Runtime Optimization
+- [ ] Support multiple LLM providers (e.g., Claude, Wenxin, etc.)
+- [ ] Implement automatic model performance evaluation
+- [ ] Add model call cost tracking
+- [ ] Support batch processing optimization
+
+### 4. Skill System Extension
+- [ ] Add Named Entity Recognition (NER) skills
+- [ ] Implement multi-task parallel learning
+- [ ] Support cross-language skill transfer
+- [ ] Add text generation skill templates
+
+### 5. Toolchain Development
+- [ ] Provide command-line tools
+- [ ] Implement REST API interfaces
+- [ ] Support Jupyter Notebook integration
+- [ ] Add Web UI interfaces
+
+### 6. Monitoring and Evaluation
+- [ ] Implement detailed metrics collection system
+- [ ] Add performance visualization panels
+- [ ] Support experiment comparison analysis
+- [ ] Implement automated testing frameworks
+
+### 7. Multi-modal Support
+- [ ] Add image processing capabilities
+- [ ] Support speech input and output
+- [ ] Implement cross-modal skills
+- [ ] Support video content processing
